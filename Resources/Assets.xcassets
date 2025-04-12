@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssetsCatalog>
+    <imageSet name="MenubarIcon">
+        <image name="MenubarIcon" type="image" scale="1x" />
+        <image name="MenubarIcon@2x" type="image" scale="2x" />
+        <image name="MenubarIcon@3x" type="image" scale="3x" />
+    </imageSet>
+</AssetsCatalog>

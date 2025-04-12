@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key>
+    <string>AviationMetarMenubar</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.yourcompany.AviationMetarMenubar</string>
+    <key>CFBundleVersion</key>
+    <string>1.0</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0</string>
+    <key>NSHighResolutionCapable</key>
+    <string>True</string>
+    <key>LSBackgroundOnly</key>
+    <true/>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This app requires access to the microphone for audio features.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>This app requires access to the camera for video features.</string>
+    <key>NSLocationUsageDescription</key>
+    <string>Your location is used to find nearby airports and calculate distances.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Your location is used to find nearby airports and calculate distances.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Your location is used to find nearby airports and calculate distances even when the app is in the background.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Your location is used to find nearby airports and calculate distances both while using the app and in the background.</string>
+    <key>NSLocationTemporaryUsageDescriptionDictionary</key>
+    <dict>
+        <key>AirportDistanceCalculation</key>
+        <string>Your precise location is needed to accurately calculate distances to airports.</string>
+    </dict>
+</dict>
+</plist>

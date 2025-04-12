@@ -1,0 +1,17 @@
+Ok, I'd like to create a feature to manage the airport list:
+
+I'd like a menu item at the bottom next to the refresh called "Manage Airports..."
+It should open a dialog box. That dialog box should have a Cancel and Save button and the Save button should be default.
+Control: it should have a List of airports on the left. This list of airports should be a list by distance from wherever location services says I am. I'm not sure where we can get this list. For now we could use the list in the array.
+On the right is the chosen airport list.
+There should be arrows to add an airport from the left to the right.
+The left box should be populated from the Airports API from aviationweather.gov (details below)
+Then a button to remove an airport from the right list.
+There should be text at the top that says "choose your airports"
+
+The airport info should show Identifier, Name, Distance From the location of the mac, etc.
+The API to get airport info is a GET call to https://aviationweather.gov/api/data/airport
+And query string params:
+ids=@WA,@OR,@ID
+format=json
+There's a lot of rich airport data here so I'd like to make sure we can create a good structure that we can use a lot of the information in the UI.

@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:AviationMetarMenubar}",
+            "name": "Debug AviationMetarMenubar",
+            "program": "${workspaceFolder:AviationMetarMenubar}/.build/debug/AviationMetarMenubar",
+            "preLaunchTask": "swift: Build Debug AviationMetarMenubar"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:AviationMetarMenubar}",
+            "name": "Release AviationMetarMenubar",
+            "program": "${workspaceFolder:AviationMetarMenubar}/.build/release/AviationMetarMenubar",
+            "preLaunchTask": "swift: Build Release AviationMetarMenubar"
+        }
+    ]
+}

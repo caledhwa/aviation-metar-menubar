@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE project SYSTEM "file://localhost/System/Library/DTXConnectionServices/DTXConnectionServices.dtd">
+<project>
+    <object id="PBXProject" class="PBXProject" action="create">
+        <attribute name="LastUpgradeCheck" value="1200"/>
+        <attribute name="ORGANIZATIONNAME" value="YourOrganizationName"/>
+        <attribute name="TARGETED_DEVICE_FAMILY" value="1"/>
+        <object id="PBXNativeTarget" class="PBXNativeTarget" action="create">
+            <attribute name="NAME" value="AviationMetarMenubar"/>
+            <attribute name="PRODUCT_NAME" value="AviationMetarMenubar"/>
+            <attribute name="PRODUCT_TYPE" value="com.apple.product-type.application"/>
+            <attribute name="BUILD_DIR" value="$(BUILD_ROOT)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)"/>
+            <attribute name="ENABLE_BITCODE" value="NO"/>
+            <attribute name="CODE_SIGN_IDENTITY" value="iPhone Developer"/>
+            <attribute name="CODE_SIGN_STYLE" value="Automatic"/>
+            <attribute name="DEVELOPMENT_TEAM" value="YourDevelopmentTeamID"/>
+            <attribute name="INFOPLIST_FILE" value="AviationMetarMenubar/Info.plist"/>
+            <attribute name="TARGETED_DEVICE_FAMILY" value="1"/>
+        </object>
+        <object id="PBXFileReference" class="PBXFileReference" action="create">
+            <attribute name="path" value="AviationMetarMenubar.xcodeproj"/>
+            <attribute name="sourceTree" value="<group>"/>
+        </object>
+        <object id="PBXGroup" class="PBXGroup" action="create">
+            <attribute name="name" value="AviationMetarMenubar"/>
+            <attribute name="sourceTree" value="<group>"/>
+        </object>
+        <object id="PBXBuildFile" class="PBXBuildFile" action="create">
+            <attribute name="fileRef" value="PBXFileReference"/>
+        </object>
+        <object id="PBXFileReference" class="PBXFileReference" action="create">
+            <attribute name="path" value="Sources"/>
+            <attribute name="sourceTree" value="<group>"/>
+        </object>
+        <object id="PBXFileReference" class="PBXFileReference" action="create">
+            <attribute name="path" value="Resources"/>
+            <attribute name="sourceTree" value="<group>"/>
+        </object>
+        <object id="PBXFileReference" class="PBXFileReference" action="create">
+            <attribute name="path" value="Tests"/>
+            <attribute name="sourceTree" value="<group>"/>
+        </object>
+    </object>
+</project>
