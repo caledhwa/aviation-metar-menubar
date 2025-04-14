@@ -12,7 +12,20 @@ class MenuBarController: NSObject {
         setupMenuBar()
         airportManager = AirportManager()
         metarService = MetarService(airportManager: airportManager)
-        fetchMetarData()
+        
+        // Check if there are airports before attempting to fetch data
+        if airportManager.userAirports.isEmpty {
+            // Update the status bar to show "No Airports" instead of "Loading..."
+            if let button = statusItem.button {
+                button.title = "No Airports"
+            }
+            // Still build the menu with Manage Airports and Quit options
+            showMenu()
+        } else {
+            // Only fetch METAR data if we have airports
+            fetchMetarData()
+        }
+        
         startRefreshTimer()
     }
 
@@ -51,102 +64,113 @@ class MenuBarController: NSObject {
             errorItem.submenu = errorMenu
             menu.addItem(errorItem)
         } else {
-            // Display regular airport data
-            for airport in metarService.airports {
-                // Format the primary menu item title with condensed format
-                let primaryTitle = formatCondensedMenuTitle(airport: airport)
-                let airportMenuItem = NSMenuItem(title: primaryTitle, action: nil, keyEquivalent: "")
-                
-                // Set color and font attributes for the main menu item
-                let airportAttributes: [NSAttributedString.Key: Any] = [
-                    .foregroundColor: airport.categoryColor,
-                    .font: NSFont(name: "Frutiger Bold", size: 16) ?? NSFont.systemFont(ofSize: 16, weight: .bold)
-                ]
-                airportMenuItem.attributedTitle = NSAttributedString(string: primaryTitle, attributes: airportAttributes)
-                
-                let subMenu = NSMenu()
-                // Set font for submenu items
-                subMenu.font = NSFont(name: "Frutiger Bold", size: 14) ?? NSFont.systemFont(ofSize: 14, weight: .bold)
-                
-                // Add airport name as the first item in submenu if available
-                if !airport.airportName.isEmpty {
-                    let airportNameItem = NSMenuItem(title: airport.airportName, action: nil, keyEquivalent: "")
-                    let nameAttributes: [NSAttributedString.Key: Any] = [
+            // Get the order of airports from the airport manager
+            let orderedAirportCodes = airportManager.userAirports.map { $0.icaoId }
+            
+            // Create a dictionary for fast lookup of Metar objects by airport code
+            var metarByCode: [String: Metar] = [:]
+            for metar in metarService.airports {
+                metarByCode[metar.airportCode] = metar
+            }
+            
+            // Display airports in the same order as in the airport manager
+            for code in orderedAirportCodes {
+                if let airport = metarByCode[code] {
+                    // Format the primary menu item title with condensed format
+                    let primaryTitle = formatCondensedMenuTitle(airport: airport)
+                    let airportMenuItem = NSMenuItem(title: primaryTitle, action: nil, keyEquivalent: "")
+                    
+                    // Set color and font attributes for the main menu item
+                    let airportAttributes: [NSAttributedString.Key: Any] = [
+                        .foregroundColor: airport.categoryColor,
+                        .font: NSFont(name: "Frutiger Bold", size: 16) ?? NSFont.systemFont(ofSize: 16, weight: .bold)
+                    ]
+                    airportMenuItem.attributedTitle = NSAttributedString(string: primaryTitle, attributes: airportAttributes)
+                    
+                    let subMenu = NSMenu()
+                    // Set font for submenu items
+                    subMenu.font = NSFont(name: "Frutiger Bold", size: 14) ?? NSFont.systemFont(ofSize: 14, weight: .bold)
+                    
+                    // Add airport name as the first item in submenu if available
+                    if !airport.airportName.isEmpty {
+                        let airportNameItem = NSMenuItem(title: airport.airportName, action: nil, keyEquivalent: "")
+                        let nameAttributes: [NSAttributedString.Key: Any] = [
+                            .foregroundColor: NSColor.white,
+                            .font: NSFont(name: "Frutiger Bold", size: 16) ?? NSFont.systemFont(ofSize: 16, weight: .bold)
+                        ]
+                        airportNameItem.attributedTitle = NSAttributedString(string: airport.airportName, attributes: nameAttributes)
+                        subMenu.addItem(airportNameItem)
+                        subMenu.addItem(NSMenuItem.separator())
+                    }
+                    
+                    // Add all cloud layers to the submenu
+                    if !airport.allCloudLayers.isEmpty && airport.allCloudLayers[0] != "SKC" {
+                        let cloudsTitle = NSMenuItem(title: "Cloud Layers:", action: nil, keyEquivalent: "")
+                        let cloudsTitleAttributes: [NSAttributedString.Key: Any] = [
+                            .foregroundColor: NSColor.white,
+                            .font: NSFont(name: "Frutiger Bold", size: 14) ?? NSFont.systemFont(ofSize: 14, weight: .bold)
+                        ]
+                        cloudsTitle.attributedTitle = NSAttributedString(string: "Cloud Layers:", attributes: cloudsTitleAttributes)
+                        subMenu.addItem(cloudsTitle)
+                        
+                        // Add each cloud layer
+                        for layer in airport.allCloudLayers {
+                            addColoredMenuItem(to: subMenu, title: "  \(layer)", color: airport.categoryColor)
+                        }
+                    } else {
+                        addColoredMenuItem(to: subMenu, title: "SKC (Clear Skies)", color: airport.categoryColor)
+                    }
+                    
+                    // Add additional conditions
+                    if !airport.additionalConditions.isEmpty {
+                        let conditionsTitle = NSMenuItem(title: "Weather Conditions:", action: nil, keyEquivalent: "")
+                        let conditionsTitleAttributes: [NSAttributedString.Key: Any] = [
+                            .foregroundColor: NSColor.white,
+                            .font: NSFont(name: "Frutiger Bold", size: 14) ?? NSFont.systemFont(ofSize: 14, weight: .bold)
+                        ]
+                        conditionsTitle.attributedTitle = NSAttributedString(string: "Weather Conditions:", attributes: conditionsTitleAttributes)
+                        subMenu.addItem(conditionsTitle)
+                        
+                        for condition in airport.additionalConditions {
+                            addColoredMenuItem(to: subMenu, title: "  \(condition)", color: airport.categoryColor)
+                        }
+                    }
+                    
+                    subMenu.addItem(NSMenuItem.separator())
+                    
+                    // Add visibility
+                    addColoredMenuItem(to: subMenu, title: "Visibility: \(airport.visibility)", color: airport.categoryColor)
+                    
+                    // Add wind
+                    addColoredMenuItem(to: subMenu, title: "Wind: \(airport.wind)", color: airport.categoryColor)
+                    
+                    // Add temperature
+                    addColoredMenuItem(to: subMenu, title: "Temp: \(airport.temperature)", color: airport.categoryColor)
+                    
+                    // Add altimeter
+                    addColoredMenuItem(to: subMenu, title: "Alt: \(airport.altimeter)", color: airport.categoryColor)
+                    
+                    // Add both local and Zulu observation times
+                    let localTimeItem = NSMenuItem(title: "Time (Local): \(airport.observationTime)", action: nil, keyEquivalent: "")
+                    let localTimeAttributes: [NSAttributedString.Key: Any] = [
                         .foregroundColor: NSColor.white,
                         .font: NSFont(name: "Frutiger Bold", size: 16) ?? NSFont.systemFont(ofSize: 16, weight: .bold)
                     ]
-                    airportNameItem.attributedTitle = NSAttributedString(string: airport.airportName, attributes: nameAttributes)
-                    subMenu.addItem(airportNameItem)
-                    subMenu.addItem(NSMenuItem.separator())
-                }
-                
-                // Add all cloud layers to the submenu
-                if !airport.allCloudLayers.isEmpty && airport.allCloudLayers[0] != "SKC" {
-                    let cloudsTitle = NSMenuItem(title: "Cloud Layers:", action: nil, keyEquivalent: "")
-                    let cloudsTitleAttributes: [NSAttributedString.Key: Any] = [
-                        .foregroundColor: NSColor.white,
-                        .font: NSFont(name: "Frutiger Bold", size: 14) ?? NSFont.systemFont(ofSize: 14, weight: .bold)
-                    ]
-                    cloudsTitle.attributedTitle = NSAttributedString(string: "Cloud Layers:", attributes: cloudsTitleAttributes)
-                    subMenu.addItem(cloudsTitle)
+                    localTimeItem.attributedTitle = NSAttributedString(string: "Time (Local): \(airport.observationTime)", attributes: localTimeAttributes)
+                    subMenu.addItem(localTimeItem)
                     
-                    // Add each cloud layer
-                    for layer in airport.allCloudLayers {
-                        addColoredMenuItem(to: subMenu, title: "  \(layer)", color: airport.categoryColor)
-                    }
-                } else {
-                    addColoredMenuItem(to: subMenu, title: "SKC (Clear Skies)", color: airport.categoryColor)
-                }
-                
-                // Add additional conditions
-                if !airport.additionalConditions.isEmpty {
-                    let conditionsTitle = NSMenuItem(title: "Weather Conditions:", action: nil, keyEquivalent: "")
-                    let conditionsTitleAttributes: [NSAttributedString.Key: Any] = [
-                        .foregroundColor: NSColor.white,
-                        .font: NSFont(name: "Frutiger Bold", size: 14) ?? NSFont.systemFont(ofSize: 14, weight: .bold)
+                    // Add Zulu time with a purple color to distinguish it
+                    let zuluTimeItem = NSMenuItem(title: "Time (Zulu): \(airport.observationTimeZulu)", action: nil, keyEquivalent: "")
+                    let zuluTimeAttributes: [NSAttributedString.Key: Any] = [
+                        .foregroundColor: NSColor(red: 0.7, green: 0.7, blue: 1.0, alpha: 1.0), // Light purple for Zulu time
+                        .font: NSFont(name: "Frutiger Bold", size: 16) ?? NSFont.systemFont(ofSize: 16, weight: .bold)
                     ]
-                    conditionsTitle.attributedTitle = NSAttributedString(string: "Weather Conditions:", attributes: conditionsTitleAttributes)
-                    subMenu.addItem(conditionsTitle)
+                    zuluTimeItem.attributedTitle = NSAttributedString(string: "Time (Zulu): \(airport.observationTimeZulu)", attributes: zuluTimeAttributes)
+                    subMenu.addItem(zuluTimeItem)
                     
-                    for condition in airport.additionalConditions {
-                        addColoredMenuItem(to: subMenu, title: "  \(condition)", color: airport.categoryColor)
-                    }
+                    airportMenuItem.submenu = subMenu
+                    menu.addItem(airportMenuItem)
                 }
-                
-                subMenu.addItem(NSMenuItem.separator())
-                
-                // Add visibility
-                addColoredMenuItem(to: subMenu, title: "Visibility: \(airport.visibility)", color: airport.categoryColor)
-                
-                // Add wind
-                addColoredMenuItem(to: subMenu, title: "Wind: \(airport.wind)", color: airport.categoryColor)
-                
-                // Add temperature
-                addColoredMenuItem(to: subMenu, title: "Temp: \(airport.temperature)", color: airport.categoryColor)
-                
-                // Add altimeter
-                addColoredMenuItem(to: subMenu, title: "Alt: \(airport.altimeter)", color: airport.categoryColor)
-                
-                // Add both local and Zulu observation times
-                let localTimeItem = NSMenuItem(title: "Time (Local): \(airport.observationTime)", action: nil, keyEquivalent: "")
-                let localTimeAttributes: [NSAttributedString.Key: Any] = [
-                    .foregroundColor: NSColor.white,
-                    .font: NSFont(name: "Frutiger Bold", size: 16) ?? NSFont.systemFont(ofSize: 16, weight: .bold)
-                ]
-                localTimeItem.attributedTitle = NSAttributedString(string: "Time (Local): \(airport.observationTime)", attributes: localTimeAttributes)
-                subMenu.addItem(localTimeItem)
-                
-                // Add Zulu time with a purple color to distinguish it
-                let zuluTimeItem = NSMenuItem(title: "Time (Zulu): \(airport.observationTimeZulu)", action: nil, keyEquivalent: "")
-                let zuluTimeAttributes: [NSAttributedString.Key: Any] = [
-                    .foregroundColor: NSColor(red: 0.7, green: 0.7, blue: 1.0, alpha: 1.0), // Light purple for Zulu time
-                    .font: NSFont(name: "Frutiger Bold", size: 16) ?? NSFont.systemFont(ofSize: 16, weight: .bold)
-                ]
-                zuluTimeItem.attributedTitle = NSAttributedString(string: "Time (Zulu): \(airport.observationTimeZulu)", attributes: zuluTimeAttributes)
-                subMenu.addItem(zuluTimeItem)
-                
-                airportMenuItem.submenu = subMenu
-                menu.addItem(airportMenuItem)
             }
         }
         
@@ -160,6 +184,12 @@ class MenuBarController: NSObject {
         // Add Refresh Now menu item with proper action
         let refreshItem = NSMenuItem(title: "Refresh Now", action: #selector(refreshData), keyEquivalent: "R")
         refreshItem.target = self // Make sure the target is set for the action to work
+        
+        // Disable Refresh option if there are no airports
+        if airportManager.userAirports.isEmpty {
+            refreshItem.isEnabled = false
+        }
+        
         menu.addItem(refreshItem)
         
         // Add Quit menu item
@@ -241,6 +271,10 @@ class MenuBarController: NSObject {
                 // Show "Fetch Error" in the menu bar when there's an error
                 button.title = "Fetch Error"
                 button.contentTintColor = NSColor.red
+            } else if airportManager.userAirports.isEmpty {
+                // Show "No Airports" when the airport list is empty
+                button.title = "No Airports"
+                button.contentTintColor = NSColor.white
             } else {
                 button.title = "No METAR Data"
                 button.contentTintColor = NSColor.white
@@ -329,12 +363,14 @@ class MenuBarController: NSObject {
     @objc private func showAirportManager() {
         // Create a SwiftUI hosting controller for our AirportManagementView
         let airportManagementView = AirportManagementView(airportManager: airportManager)
+            .frame(width: 700, height: 600) // Fixed size to ensure buttons are visible
+        
         let hostingController = NSHostingController(rootView: airportManagementView)
         
-        // Create a window for the view
+        // Create a window for the view with proper macOS window style
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 700, height: 500),
-            styleMask: [.titled, .closable],
+            contentRect: NSRect(x: 0, y: 0, width: 700, height: 600), // Taller to show buttons
+            styleMask: [.titled, .closable, .miniaturizable], // Proper macOS window controls
             backing: .buffered,
             defer: false
         )
@@ -343,6 +379,9 @@ class MenuBarController: NSObject {
         window.contentViewController = hostingController
         window.center()
         window.level = .floating  // Keep window on top
+        
+        // Fix minimum size to ensure buttons remain visible
+        window.minSize = NSSize(width: 700, height: 600)
         
         // Make sure the window is key and front
         window.makeKeyAndOrderFront(nil)

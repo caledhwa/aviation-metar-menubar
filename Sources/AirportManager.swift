@@ -24,15 +24,33 @@ class AirportManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyKilometer // Don't need high precision
         
+        // Debug information about the app's bundle identifier
+        #if DEBUG
+        if let bundleIdentifier = Bundle.main.bundleIdentifier {
+            print("App running with bundle identifier: \(bundleIdentifier)")
+        } else {
+            print("Warning: No bundle identifier found")
+        }
+        #endif
+        
         // Check current authorization status
         locationAuthStatus = locationManager.authorizationStatus
         
         // Request location permission if not determined yet
         if locationAuthStatus == .notDetermined {
-            locationManager.requestAlwaysAuthorization() // macOS only has .requestAlwaysAuthorization()
+            // For development/debug environment, try to request permission immediately
+            // This helps when running with "swift run" where the bundle ID might differ
+            locationManager.requestAlwaysAuthorization()
+            print("Requesting location authorization (initial)")
         } else if locationAuthStatus == .authorizedAlways {
             locationManager.startUpdatingLocation()
+            print("Location already authorized, starting updates")
+        } else {
+            print("Location status is \(locationAuthStatus.rawValue) - not requesting permissions")
         }
+        
+        // Immediately fetch airports to get full data
+        fetchAirports()
     }
     
     // MARK: - CLLocationManagerDelegate
@@ -227,22 +245,41 @@ class AirportManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     // Load saved airport codes from UserDefaults
     private func loadSavedAirports() {
-        if let airportCodes = UserDefaults.standard.stringArray(forKey: userDefaultsKey) {
+        // First try to load the full airport data if available
+        if let savedData = UserDefaults.standard.data(forKey: "\(userDefaultsKey)_data"),
+           let decoder = try? JSONDecoder().decode([Airport].self, from: savedData) {
+            userAirports = decoder
+            print("Loaded \(userAirports.count) airports with complete data")
+        }
+        // Fall back to just the airport codes
+        else if let airportCodes = UserDefaults.standard.stringArray(forKey: userDefaultsKey) {
             userAirports = airportCodes.compactMap { code in
                 Airport(icaoId: code, name: code, state: nil, country: nil, lat: nil, lon: nil, elev: nil, iataId: nil, faaId: nil, priority: nil)
             }
-        } else {
-            // Default airports if none are saved
+            print("Loaded \(userAirports.count) airports with basic codes only")
+        } 
+        // Default airports if none are saved
+        else {
             userAirports = ["KRNT", "KBFI", "KSEA", "KOLM", "KPWT", "KPLU", "KTIW", "KSHN", "KAWO", "KBVS", "KHQM", "KPAE", "KSPB", "KAST", "KCLS", "KKLS", "KPDX", "KHIO"].map { code in
                 Airport(icaoId: code, name: code, state: nil, country: nil, lat: nil, lon: nil, elev: nil, iataId: nil, faaId: nil, priority: nil)
             }
+            print("No saved airports found, using defaults")
         }
     }
     
     // Save selected airport codes to UserDefaults
     func saveAirports() {
+        // Save the airports in their current order - just the codes
         let codes = userAirports.map { $0.icaoId }
         UserDefaults.standard.set(codes, forKey: userDefaultsKey)
+        
+        // Also save complete airport data in a separate key for persistence
+        let encoder = JSONEncoder()
+        if let encodedData = try? encoder.encode(userAirports) {
+            UserDefaults.standard.set(encodedData, forKey: "\(userDefaultsKey)_data")
+        }
+        
+        print("Saved \(codes.count) airports in order: \(codes.joined(separator: ", "))")
     }
     
     // Update distances for all airports
@@ -361,13 +398,30 @@ class AirportManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     // Add an airport to user's selection
     func addAirport(_ airport: Airport) {
+        // Check if the airport already exists in the user's list
         guard !userAirports.contains(where: { $0.icaoId == airport.icaoId }) else { return }
-        userAirports.append(airport)
+        
+        // Use the fully populated airport object from allAirports if available
+        // This ensures we get all metadata like name, lat/lon, etc.
+        if let fullAirport = allAirports.first(where: { $0.icaoId == airport.icaoId }) {
+            // Use the full airport object from the allAirports list
+            userAirports.append(fullAirport)
+            print("Added airport \(fullAirport.icaoId) with complete data")
+        } else {
+            // Fallback to the airport provided (might have limited data)
+            userAirports.append(airport)
+            print("Added airport \(airport.icaoId) with possibly limited data")
+        }
     }
     
     // Remove an airport from user's selection
     func removeAirport(_ airport: Airport) {
         userAirports.removeAll { $0.icaoId == airport.icaoId }
+    }
+    
+    // Remove all airports from user's selection
+    func removeAll() {
+        userAirports.removeAll()
     }
     
     // Get available airports that are not already selected

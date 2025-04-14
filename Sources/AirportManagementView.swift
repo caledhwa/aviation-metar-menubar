@@ -1,5 +1,6 @@
 import SwiftUI
 import CoreLocation
+import UniformTypeIdentifiers
 
 struct AirportManagementView: View {
     @Environment(\.presentationMode) var presentationMode
@@ -8,12 +9,15 @@ struct AirportManagementView: View {
     @State private var selectedAvailableAirport: Airport?
     @State private var selectedUserAirport: Airport?
     @State private var searchText: String = ""
-    @State private var sortOption: SortOption = .custom
+    @State private var draggedAirport: Airport?
     
-    enum SortOption {
-        case custom
-        case distance
-        case alphabetical
+    // New sort state variables
+    @State private var leftSortMode: SortMode = .nameAsc
+    @State private var rightSortMode: SortMode = .nameAsc
+    
+    // Sort modes for both boxes
+    enum SortMode {
+        case nameAsc, nameDesc, distanceNear, distanceFar
     }
     
     var body: some View {
@@ -104,9 +108,40 @@ struct AirportManagementView: View {
                 .padding(.horizontal)
             }
             
-            HStack {
+            HStack(alignment: .top) {
                 // Left column - Available airports
                 VStack {
+                    HStack {
+                        Text("Choose Airports")
+                            .font(.headline)
+                        
+                        Spacer()
+                        
+                        // Sort buttons for left box
+                        Button(action: { toggleLeftNameSort() }) {
+                            HStack(spacing: 2) {
+                                Text("Name")
+                                    .font(.caption)
+                                Image(systemName: leftSortMode == .nameAsc ? "arrow.down" : "arrow.up")
+                                    .font(.caption)
+                            }
+                        }
+                        .buttonStyle(.bordered)
+                        .disabled(leftSortMode != .nameAsc && leftSortMode != .nameDesc)
+                        
+                        Button(action: { toggleLeftDistanceSort() }) {
+                            HStack(spacing: 2) {
+                                Text("Distance")
+                                    .font(.caption)
+                                Image(systemName: leftSortMode == .distanceNear ? "arrow.down" : "arrow.up")
+                                    .font(.caption)
+                            }
+                        }
+                        .buttonStyle(.bordered)
+                        .disabled(leftSortMode != .distanceNear && leftSortMode != .distanceFar)
+                    }
+                    .padding(.horizontal)
+                    
                     HStack {
                         TextField("Search airports", text: $searchText)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -141,10 +176,11 @@ struct AirportManagementView: View {
                         }
                     }
                     .listStyle(PlainListStyle())
-                    .frame(minWidth: 300)
+                    .frame(height: 300)
                     .background(Color(.textBackgroundColor))
                     .cornerRadius(8)
                 }
+                .frame(minWidth: 300)
                 
                 // Middle - Add/Remove buttons
                 VStack {
@@ -175,29 +211,41 @@ struct AirportManagementView: View {
                 
                 // Right column - Selected airports
                 VStack {
-                    VStack(spacing: 8) {
-                        Text("Your Selected Airports")
+                    HStack {
+                        Text("Selected Airports")
                             .font(.headline)
                         
-                        // Sorting options
-                        HStack {
-                            Text("Sort by:")
-                                .font(.caption)
-                            
-                            Picker("Sort", selection: $sortOption) {
-                                Text("Custom").tag(SortOption.custom)
-                                Text("Distance").tag(SortOption.distance)
-                                Text("Name").tag(SortOption.alphabetical)
+                        Spacer()
+                        
+                        // Sort buttons for right box
+                        Button(action: { toggleRightNameSort() }) {
+                            HStack(spacing: 2) {
+                                Text("Name")
+                                    .font(.caption)
+                                Image(systemName: rightSortMode == .nameAsc ? "arrow.down" : "arrow.up")
+                                    .font(.caption)
                             }
-                            .pickerStyle(SegmentedPickerStyle())
-                            // Fixed onChange modifier to be compatible with current Swift version
-                            .onChange(of: sortOption, perform: { _ in
-                                sortUserAirports()
-                            })
                         }
-                        .padding(.horizontal)
+                        .buttonStyle(.bordered)
+                        .disabled(rightSortMode != .nameAsc && rightSortMode != .nameDesc)
+                        
+                        Button(action: { toggleRightDistanceSort() }) {
+                            HStack(spacing: 2) {
+                                Text("Distance")
+                                    .font(.caption)
+                                Image(systemName: rightSortMode == .distanceNear ? "arrow.down" : "arrow.up")
+                                    .font(.caption)
+                            }
+                        }
+                        .buttonStyle(.bordered)
+                        .disabled(rightSortMode != .distanceNear && rightSortMode != .distanceFar)
                     }
-                    .padding(.vertical, 8)
+                    .padding(.horizontal)
+                    
+                    Text("Drag to reorder")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .padding(.bottom, 5)
                     
                     List {
                         ForEach(airportManager.userAirports) { airport in
@@ -207,27 +255,48 @@ struct AirportManagementView: View {
                                     selectedUserAirport = airport
                                 }
                                 .background(selectedUserAirport?.id == airport.id ? Color.accentColor.opacity(0.2) : Color.clear)
+                                .onDrag {
+                                    self.draggedAirport = airport
+                                    return NSItemProvider(object: airport.id as NSString)
+                                }
+                                .onDrop(of: [UTType.text], delegate: AirportDropDelegate(
+                                    airport: airport, 
+                                    airportList: airportManager.userAirports,
+                                    airportManager: airportManager, 
+                                    draggedAirport: $draggedAirport))
                         }
-                        .onMove(perform: sortOption == .custom ? moveUserAirport : nil)
                     }
                     .listStyle(PlainListStyle())
-                    .frame(minWidth: 300)
+                    .frame(height: 300)
                     .background(Color(.textBackgroundColor))
                     .cornerRadius(8)
                     
-                    if sortOption == .custom {
-                        Text("Drag to reorder")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .padding(.bottom, 4)
+                    // Clear All button 
+                    HStack {
+                        Button("Remove Selected") {
+                            if let selected = selectedUserAirport {
+                                airportManager.removeAirport(selected)
+                                selectedUserAirport = nil
+                            }
+                        }
+                        .disabled(selectedUserAirport == nil)
+                        
+                        Spacer()
+                        
+                        Button("Clear All") {
+                            airportManager.removeAll()
+                        }
+                        .foregroundColor(.red)
                     }
+                    .padding(.horizontal)
+                    .padding(.top, 5)
                 }
+                .frame(minWidth: 300)
             }
             .padding()
             
             // Location status indicator
             HStack {
-                // Define status properties without using let statements in the view body
                 Image(systemName: getStatusIcon())
                     .foregroundColor(getStatusColor())
                 
@@ -255,16 +324,21 @@ struct AirportManagementView: View {
                     closeWindow()
                 }
                 .keyboardShortcut(.cancelAction)
+                .buttonStyle(.bordered)
+                .frame(width: 100)
                 
                 Spacer()
                 
-                Button("Save") {
+                Button("Done") {
                     airportManager.saveAirports()
                     closeWindow()
                 }
                 .keyboardShortcut(.defaultAction)
+                .buttonStyle(.borderedProminent)
+                .frame(width: 100)
             }
-            .padding()
+            .padding(.horizontal, 20)
+            .padding(.bottom, 20)
         }
         .frame(minWidth: 700, idealWidth: 700, maxWidth: .infinity, 
                minHeight: 500, idealHeight: 500, maxHeight: .infinity)
@@ -273,7 +347,27 @@ struct AirportManagementView: View {
         }
     }
     
-    // Filter available airports based on search text and sort by distance
+    // Computed property for sorted user airports based on current sort mode
+    private var sortedUserAirports: [Airport] {
+        switch rightSortMode {
+        case .nameAsc:
+            return airportManager.userAirports.sorted { $0.icaoId < $1.icaoId }
+        case .nameDesc:
+            return airportManager.userAirports.sorted { $0.icaoId > $1.icaoId }
+        case .distanceNear:
+            return airportManager.userAirports.sorted { 
+                ($0.distanceFromCurrentLocation ?? Double.infinity) < 
+                ($1.distanceFromCurrentLocation ?? Double.infinity) 
+            }
+        case .distanceFar:
+            return airportManager.userAirports.sorted { 
+                ($0.distanceFromCurrentLocation ?? 0) > 
+                ($1.distanceFromCurrentLocation ?? 0) 
+            }
+        }
+    }
+    
+    // Filter available airports based on search text and sort by current mode
     private var filteredAvailableAirports: [Airport] {
         // Start with all available airports
         var airports = airportManager.availableAirports
@@ -286,32 +380,76 @@ struct AirportManagementView: View {
             }
         }
         
-        // Sort by distance if location is available (should already be sorted in manager, but ensure it here)
-        if airportManager.currentLocation != nil {
-            airports.sort {
-                ($0.distanceFromCurrentLocation ?? Double.infinity) <
-                ($1.distanceFromCurrentLocation ?? Double.infinity)
+        // Sort based on current sort mode
+        switch leftSortMode {
+        case .nameAsc:
+            airports.sort { $0.icaoId < $1.icaoId }
+        case .nameDesc:
+            airports.sort { $0.icaoId > $1.icaoId }
+        case .distanceNear:
+            airports.sort { 
+                ($0.distanceFromCurrentLocation ?? Double.infinity) < 
+                ($1.distanceFromCurrentLocation ?? Double.infinity) 
+            }
+        case .distanceFar:
+            airports.sort { 
+                ($0.distanceFromCurrentLocation ?? 0) > 
+                ($1.distanceFromCurrentLocation ?? 0) 
             }
         }
         
         return airports
     }
     
-    // Move user airport in the list (for reordering)
-    private func moveUserAirport(from source: IndexSet, to destination: Int) {
-        airportManager.userAirports.move(fromOffsets: source, toOffset: destination)
+    // Toggle sort functions for left box
+    private func toggleLeftNameSort() {
+        leftSortMode = leftSortMode == .nameAsc ? .nameDesc : .nameAsc
     }
     
-    // Sort user airports based on selected option
-    private func sortUserAirports() {
-        switch sortOption {
-        case .distance:
-            airportManager.sortUserAirportsByDistance()
-        case .alphabetical:
+    private func toggleLeftDistanceSort() {
+        leftSortMode = leftSortMode == .distanceNear ? .distanceFar : .distanceNear
+    }
+    
+    // Toggle sort functions for right box
+    private func toggleRightNameSort() {
+        rightSortMode = rightSortMode == .nameAsc ? .nameDesc : .nameAsc
+        
+        // Apply sorting directly to the airports array
+        if rightSortMode == .nameAsc {
             airportManager.userAirports.sort { $0.icaoId < $1.icaoId }
-        case .custom:
-            // Do nothing - keep current order
-            break
+        } else {
+            airportManager.userAirports.sort { $0.icaoId > $1.icaoId }
+        }
+    }
+    
+    private func toggleRightDistanceSort() {
+        rightSortMode = rightSortMode == .distanceNear ? .distanceFar : .distanceNear
+        
+        // Apply sorting directly to the airports array
+        if rightSortMode == .distanceNear {
+            airportManager.userAirports.sort { 
+                ($0.distanceFromCurrentLocation ?? Double.infinity) < 
+                ($1.distanceFromCurrentLocation ?? Double.infinity) 
+            }
+        } else {
+            airportManager.userAirports.sort { 
+                ($0.distanceFromCurrentLocation ?? Double.infinity) > 
+                ($1.distanceFromCurrentLocation ?? Double.infinity) 
+            }
+        }
+    }
+    
+    // Show confirmation before clearing all airports
+    private func confirmClearAll() {
+        let alert = NSAlert()
+        alert.messageText = "Clear All Airports?"
+        alert.informativeText = "Are you sure you want to remove all selected airports? This action cannot be undone."
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "Clear All")
+        alert.addButton(withTitle: "Cancel")
+        
+        if alert.runModal() == .alertFirstButtonReturn {
+            airportManager.removeAll()
         }
     }
     
@@ -364,6 +502,57 @@ struct AirportManagementView: View {
         @unknown default:
             return "Unknown location authorization status"
         }
+    }
+}
+
+// Drop delegate to handle airport reordering
+struct AirportDropDelegate: DropDelegate {
+    let airport: Airport
+    let airportList: [Airport]
+    let airportManager: AirportManager
+    @Binding var draggedAirport: Airport?
+    
+    func performDrop(info: DropInfo) -> Bool {
+        guard let draggedAirport = self.draggedAirport else {
+            return false
+        }
+        
+        // Get the indices
+        guard let fromIndex = airportManager.userAirports.firstIndex(where: { $0.id == draggedAirport.id }),
+              let toIndex = airportManager.userAirports.firstIndex(where: { $0.id == airport.id }) else {
+            return false
+        }
+        
+        // Perform the move if indices are different
+        if fromIndex != toIndex {
+            withAnimation {
+                let element = airportManager.userAirports.remove(at: fromIndex)
+                airportManager.userAirports.insert(element, at: toIndex > fromIndex ? toIndex - 1 : toIndex)
+            }
+        }
+        
+        return true
+    }
+    
+    func dropEntered(info: DropInfo) {
+        guard let draggedAirport = self.draggedAirport,
+              draggedAirport.id != airport.id,
+              let fromIndex = airportManager.userAirports.firstIndex(where: { $0.id == draggedAirport.id }),
+              let toIndex = airportManager.userAirports.firstIndex(where: { $0.id == airport.id }) else {
+            return
+        }
+        
+        // Move the item within the array
+        if airportManager.userAirports[fromIndex].id != airportManager.userAirports[toIndex].id {
+            withAnimation {
+                let element = airportManager.userAirports.remove(at: fromIndex)
+                airportManager.userAirports.insert(element, at: toIndex > fromIndex ? toIndex - 1 : toIndex)
+            }
+        }
+    }
+    
+    func dropUpdated(info: DropInfo) -> DropProposal? {
+        return DropProposal(operation: .move)
     }
 }
 

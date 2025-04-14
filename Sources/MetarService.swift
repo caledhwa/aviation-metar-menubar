@@ -155,6 +155,7 @@ class MetarService {
         // Get the list of airport codes - use the manager if available, otherwise fall back to defaults
         let airportCodes: [String]
         if let manager = airportManager {
+            // Use the exact order of airports from the user's selection
             airportCodes = manager.userAirports.map { $0.icaoId }
         } else {
             // Default list if no manager is provided
@@ -163,7 +164,9 @@ class MetarService {
         
         // Ensure we have airports to fetch
         guard !airportCodes.isEmpty else {
-            self.lastError = "No airports selected"
+            // Clear any existing data when there are no airports
+            self.airports = []
+            self.lastError = nil
             completion(false)
             return
         }
@@ -329,9 +332,64 @@ class MetarService {
         
         do {
             // Try to decode the response as an array of MetarData objects
-            let response = try decoder.decode([MetarData].self, from: data)
+            let metarDataArray = try decoder.decode([MetarData].self, from: data)
             
-            return response.map { metarData in
+            // Create a dictionary for fast lookup by airport code
+            let metarDataDict = Dictionary(uniqueKeysWithValues: metarDataArray.compactMap { 
+                metarData -> (String, MetarData)? in 
+                if let icaoId = metarData.icaoId {
+                    return (icaoId, metarData)
+                }
+                return nil
+            })
+            
+            // Get the list of airport codes in the correct order from airportManager if available
+            if let airportManager = airportManager {
+                let airportCodes = airportManager.userAirports.map { $0.icaoId }
+                
+                // Create Metar objects in the exact order specified by airportManager
+                var orderedMetars: [Metar] = []
+                
+                for code in airportCodes {
+                    if let metarData = metarDataDict[code] {
+                        // Process this airport's data
+                        let flightCategory = determineFlightCategory(visibility: metarData.visib, cloudLayers: metarData.clouds)
+                        let weatherConditions = formatCloudLayers(metarData.clouds)
+                        let visibilityString = formatVisibility(metarData.visib)
+                        let windString = formatWind(metarData.wdir, windSpeed: metarData.wspd, windGust: metarData.wgst)
+                        let temperatureString = formatTemperature(metarData.temp, dewpoint: metarData.dewp)
+                        let altimeterString = formatAltimeter(metarData.altim)
+                        let times = formatTimeFromTimestamp(metarData.obsTime)
+                        let additionalConditions = extractAdditionalConditions(from: metarData.rawOb ?? "")
+                        
+                        let metar = Metar(
+                            airportCode: code,
+                            airportName: metarData.name ?? "",
+                            metarType: metarData.metarType ?? "METAR",
+                            flightCategory: flightCategory,
+                            weatherConditions: weatherConditions,
+                            visibility: visibilityString,
+                            wind: windString,
+                            temperature: temperatureString,
+                            altimeter: altimeterString,
+                            observationTime: times.local,
+                            observationTimeZulu: times.zulu,
+                            additionalConditions: additionalConditions,
+                            allCloudLayers: formatAllCloudLayers(metarData.clouds)
+                        )
+                        
+                        orderedMetars.append(metar)
+                    }
+                }
+                
+                // If we successfully created Metar objects for all or some airports, return them
+                if !orderedMetars.isEmpty {
+                    return orderedMetars
+                }
+            }
+            
+            // Fallback to the original approach if airportManager is nil or we couldn't create ordered Metars
+            return metarDataArray.map { metarData in
                 // Determine flight category since it's not provided in the API
                 let flightCategory = determineFlightCategory(visibility: metarData.visib, cloudLayers: metarData.clouds)
                 
