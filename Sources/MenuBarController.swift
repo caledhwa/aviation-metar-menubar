@@ -308,15 +308,37 @@ class MenuBarController: NSObject {
             title += " \(airport.weatherConditions)"
         }
         
-        // Add abbreviated wind information before visibility (swapped order)
+        // Add abbreviated wind information
         title += " \(formatAbbreviatedWind(airport.wind))"
         
-        // Add visibility after wind (swapped order)
-        title += " \(airport.visibility)"
+        // Add visibility only if it's less than or equal to 9SM
+        let shouldShowVisibility = !shouldOmitVisibility(airport.visibility)
+        if shouldShowVisibility {
+            title += " \(airport.visibility)"
+        }
         
         return title
     }
-
+    
+    // Helper method to determine if visibility should be omitted (greater than 9SM)
+    private func shouldOmitVisibility(_ visibilityString: String) -> Bool {
+        // Extract numeric value from the visibility string
+        let numericPart = visibilityString.replacingOccurrences(of: "SM", with: "").trimmingCharacters(in: .whitespaces)
+        
+        // Handle "10+" format
+        if numericPart.contains("+") {
+            // If it contains a plus sign, it's definitely greater than 9SM
+            return true
+        }
+        
+        // Try to convert to Double
+        if let visibilityValue = Double(numericPart), visibilityValue > 9.0 {
+            return true
+        }
+        
+        return false
+    }
+    
     // Helper to format abbreviated wind info (e.g., "240@7" or "240@7G25")
     private func formatAbbreviatedWind(_ windString: String) -> String {
         // Handle "Calm" case
@@ -330,8 +352,18 @@ class MenuBarController: NSObject {
         
         // Extract direction
         if let dirEndIndex = windString.firstIndex(of: "°") {
-            let direction = windString[..<dirEndIndex]
-            result += direction
+            let directionSubstring = windString[..<dirEndIndex]
+            
+            // Convert to int and format with leading zeros to ensure 3 digits
+            if let directionInt = Int(directionSubstring) {
+                result += String(format: "%03d", directionInt)
+            } else {
+                // Fallback to original text if not an integer
+                result += directionSubstring
+            }
+            
+            // Add the degree symbol
+            result += "°"
         }
         
         // Extract speed
@@ -344,7 +376,7 @@ class MenuBarController: NSObject {
             }
         }
         
-        // Extract gust if present - use safer substring approach
+        // Extract gust if present
         if windString.contains("G") {
             // Use regex to safely extract gust value
             let gustPattern = try? NSRegularExpression(pattern: "G(\\d+)kts", options: [])

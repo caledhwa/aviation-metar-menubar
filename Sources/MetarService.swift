@@ -508,12 +508,14 @@ class MetarService {
     
     private func formatVisibility(_ visibility: SupportedNumericTypes?) -> String {
         guard let vis = visibility else { return "Unknown" }
+        
+        // Simply return the visibility string with SM unit
         return "\(vis.stringValue)SM"
     }
     
     private func formatWind(_ windDir: String?, windSpeed: Int?, windGust: Int?) -> String {
         // If wind speed is 0 or nil, return "Calm"
-        if (windSpeed == 0 || windSpeed == nil) && windDir == nil {
+        if windSpeed == 0 || windSpeed == nil {
             return "Calm"
         }
         
@@ -523,7 +525,8 @@ class MetarService {
             if (dir == "VRB" || dir == "Variable") {
                 direction = "Variable"
             } else if let dirInt = Int(dir) {
-                direction = "\(dirInt)°"
+                // Format to ensure 3 digits with leading zeros
+                direction = String(format: "%03d°", dirInt)
             } else {
                 direction = dir
             }
