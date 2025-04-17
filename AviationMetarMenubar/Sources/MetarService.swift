@@ -473,7 +473,7 @@ class MetarService {
     }
     
     // Updated helper functions to match the new MetarData structure
-    private func formatCloudLayers(_ cloudLayers: [MetarData.CloudData]?) -> String {
+    func formatCloudLayers(_ cloudLayers: [MetarData.CloudData]?) -> String {
         guard let layers = cloudLayers, !layers.isEmpty else { return "SKC" }
         
         // Find the lowest ceiling (BKN, OVC, or OVX)
@@ -506,14 +506,14 @@ class MetarService {
         return "Unknown"
     }
     
-    private func formatVisibility(_ visibility: SupportedNumericTypes?) -> String {
+    func formatVisibility(_ visibility: SupportedNumericTypes?) -> String {
         guard let vis = visibility else { return "Unknown" }
         
         // Simply return the visibility string with SM unit
         return "\(vis.stringValue)SM"
     }
     
-    private func formatWind(_ windDir: String?, windSpeed: Int?, windGust: Int?) -> String {
+    func formatWind(_ windDir: String?, windSpeed: Int?, windGust: Int?) -> String {
         // If wind speed is 0 or nil, return "Calm"
         if windSpeed == 0 || windSpeed == nil {
             return "Calm"
@@ -540,14 +540,14 @@ class MetarService {
         return "\(direction) @ \(speed)\(gust)"
     }
     
-    private func formatTemperature(_ temp: Double?, dewpoint: Double?) -> String {
+    func formatTemperature(_ temp: Double?, dewpoint: Double?) -> String {
         let tempC = temp != nil ? String(format: "%.1f°C", temp!) : "Unknown"
         let dewC = dewpoint != nil ? String(format: "%.1f°C", dewpoint!) : "Unknown"
         
         return "\(tempC) / \(dewC)"
     }
     
-    private func formatAltimeter(_ alt: Double?) -> String {
+    func formatAltimeter(_ alt: Double?) -> String {
         guard let alt = alt else { return "Unknown" }
         
         // Check if the value is likely in millibars (typically around 1013-1030 mb)
@@ -563,7 +563,7 @@ class MetarService {
         }
     }
     
-    private func formatTime(_ time: Int?) -> String {
+    func formatTime(_ time: Int?) -> String {
         guard let time = time else { return "Unknown" }
         
         // Format the time string to a more readable format
@@ -583,7 +583,7 @@ class MetarService {
         return "\(time) (UTC)"
     }
     
-    private func extractAdditionalConditions(from rawMETAR: String) -> [String] {
+    func extractAdditionalConditions(from rawMETAR: String) -> [String] {
         // This is a simplified implementation
         // In a real app, you would parse the rawMETAR to extract additional conditions
         var conditions: [String] = []
@@ -601,7 +601,7 @@ class MetarService {
     }
     
     // Updated flight category determination based on correct FAA criteria
-    private func determineFlightCategory(visibility: SupportedNumericTypes?, cloudLayers: [MetarData.CloudData]?) -> String {
+    func determineFlightCategory(visibility: SupportedNumericTypes?, cloudLayers: [MetarData.CloudData]?) -> String {
         // Extract numeric visibility value, handling "10+" format
         let visibilityValue: Double
         if let visString = visibility?.stringValue {
@@ -652,7 +652,7 @@ class MetarService {
     }
     
     // New method to format time from Unix timestamp that returns both local and Zulu time
-    private func formatTimeFromTimestamp(_ timestamp: Int?) -> (local: String, zulu: String) {
+    func formatTimeFromTimestamp(_ timestamp: Int?) -> (local: String, zulu: String) {
         guard let timestamp = timestamp else { return (local: "Unknown", zulu: "Unknown") }
         
         let date = Date(timeIntervalSince1970: Double(timestamp))
@@ -673,7 +673,7 @@ class MetarService {
     }
 
     // New method to format all cloud layers as an array of strings
-    private func formatAllCloudLayers(_ cloudLayers: [MetarData.CloudData]?) -> [String] {
+    func formatAllCloudLayers(_ cloudLayers: [MetarData.CloudData]?) -> [String] {
         guard let layers = cloudLayers, !layers.isEmpty else { return ["SKC"] }
         
         // Sort layers by altitude (ascending)

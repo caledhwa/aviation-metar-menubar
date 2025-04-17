@@ -1,0 +1,517 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FD64CD942DB18F0500402F44 /* MetarService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD64CD932DB18F0500402F44 /* MetarService.swift */; };
+		FD64CD952DB18F0500402F44 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD64CD902DB18F0500402F44 /* ContentView.swift */; };
+		FD64CD972DB18F0500402F44 /* AirportManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD64CD8D2DB18F0500402F44 /* AirportManagementView.swift */; };
+		FD64CD982DB18F0500402F44 /* AirportManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD64CD8E2DB18F0500402F44 /* AirportManager.swift */; };
+		FD64CD9A2DB18F0500402F44 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD64CD912DB18F0500402F44 /* main.swift */; };
+		FD64CD9B2DB18F0500402F44 /* MenuBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD64CD922DB18F0500402F44 /* MenuBarController.swift */; };
+		FD64CD9C2DB18F0500402F44 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD64CD8F2DB18F0500402F44 /* AppDelegate.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		FD64CD2A2DB186E500402F44 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FD64CD132DB186E400402F44 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FD64CD1A2DB186E400402F44;
+			remoteInfo = AviationMetarMenubar;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		FD64CD1B2DB186E400402F44 /* AviationMetarMenubar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AviationMetarMenubar.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FD64CD292DB186E500402F44 /* AviationMetarMenubarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AviationMetarMenubarTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		FD64CD8D2DB18F0500402F44 /* AirportManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirportManagementView.swift; sourceTree = "<group>"; };
+		FD64CD8E2DB18F0500402F44 /* AirportManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirportManager.swift; sourceTree = "<group>"; };
+		FD64CD8F2DB18F0500402F44 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		FD64CD902DB18F0500402F44 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		FD64CD912DB18F0500402F44 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		FD64CD922DB18F0500402F44 /* MenuBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarController.swift; sourceTree = "<group>"; };
+		FD64CD932DB18F0500402F44 /* MetarService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetarService.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		FD64CDA62DB18F5200402F44 /* Exceptions for "Models" folder in "AviationMetarMenubar" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Airport.swift,
+				Metar.swift,
+			);
+			target = FD64CD1A2DB186E400402F44 /* AviationMetarMenubar */;
+		};
+		FD64CDAA2DB18F5700402F44 /* Exceptions for "Utilities" folder in "AviationMetarMenubar" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Constants.swift,
+			);
+			target = FD64CD1A2DB186E400402F44 /* AviationMetarMenubar */;
+		};
+		FD64CDB02DB19B6500402F44 /* Exceptions for "Tests" folder in "AviationMetarMenubarTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				AviationMetarMenubarTests.swift,
+			);
+			target = FD64CD282DB186E500402F44 /* AviationMetarMenubarTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		FD64CD762DB18C5800402F44 /* Tests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				FD64CDB02DB19B6500402F44 /* Exceptions for "Tests" folder in "AviationMetarMenubarTests" target */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		FD64CDA32DB18F5200402F44 /* Models */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				FD64CDA62DB18F5200402F44 /* Exceptions for "Models" folder in "AviationMetarMenubar" target */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		FD64CDA82DB18F5700402F44 /* Utilities */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				FD64CDAA2DB18F5700402F44 /* Exceptions for "Utilities" folder in "AviationMetarMenubar" target */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FD64CD182DB186E400402F44 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FD64CD262DB186E500402F44 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FD64CD122DB186E400402F44 = {
+			isa = PBXGroup;
+			children = (
+				FD64CD1C2DB186E400402F44 /* Products */,
+				FD64CDA02DB18F4B00402F44 /* Sources */,
+				FD64CD762DB18C5800402F44 /* Tests */,
+			);
+			sourceTree = "<group>";
+		};
+		FD64CD1C2DB186E400402F44 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FD64CD1B2DB186E400402F44 /* AviationMetarMenubar.app */,
+				FD64CD292DB186E500402F44 /* AviationMetarMenubarTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FD64CDA02DB18F4B00402F44 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				FD64CDA82DB18F5700402F44 /* Utilities */,
+				FD64CDA32DB18F5200402F44 /* Models */,
+				FD64CD8D2DB18F0500402F44 /* AirportManagementView.swift */,
+				FD64CD8E2DB18F0500402F44 /* AirportManager.swift */,
+				FD64CD8F2DB18F0500402F44 /* AppDelegate.swift */,
+				FD64CD902DB18F0500402F44 /* ContentView.swift */,
+				FD64CD912DB18F0500402F44 /* main.swift */,
+				FD64CD922DB18F0500402F44 /* MenuBarController.swift */,
+				FD64CD932DB18F0500402F44 /* MetarService.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FD64CD1A2DB186E400402F44 /* AviationMetarMenubar */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FD64CD3D2DB186E500402F44 /* Build configuration list for PBXNativeTarget "AviationMetarMenubar" */;
+			buildPhases = (
+				FD64CD172DB186E400402F44 /* Sources */,
+				FD64CD182DB186E400402F44 /* Frameworks */,
+				FD64CD192DB186E400402F44 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AviationMetarMenubar;
+			packageProductDependencies = (
+			);
+			productName = AviationMetarMenubar;
+			productReference = FD64CD1B2DB186E400402F44 /* AviationMetarMenubar.app */;
+			productType = "com.apple.product-type.application";
+		};
+		FD64CD282DB186E500402F44 /* AviationMetarMenubarTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FD64CD402DB186E500402F44 /* Build configuration list for PBXNativeTarget "AviationMetarMenubarTests" */;
+			buildPhases = (
+				FD64CD252DB186E500402F44 /* Sources */,
+				FD64CD262DB186E500402F44 /* Frameworks */,
+				FD64CD272DB186E500402F44 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FD64CD2B2DB186E500402F44 /* PBXTargetDependency */,
+			);
+			name = AviationMetarMenubarTests;
+			packageProductDependencies = (
+			);
+			productName = AviationMetarMenubarTests;
+			productReference = FD64CD292DB186E500402F44 /* AviationMetarMenubarTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FD64CD132DB186E400402F44 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1630;
+				LastUpgradeCheck = 1630;
+				TargetAttributes = {
+					FD64CD1A2DB186E400402F44 = {
+						CreatedOnToolsVersion = 16.3;
+					};
+					FD64CD282DB186E500402F44 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = FD64CD1A2DB186E400402F44;
+					};
+				};
+			};
+			buildConfigurationList = FD64CD162DB186E400402F44 /* Build configuration list for PBXProject "AviationMetarMenubar" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = FD64CD122DB186E400402F44;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = FD64CD1C2DB186E400402F44 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FD64CD1A2DB186E400402F44 /* AviationMetarMenubar */,
+				FD64CD282DB186E500402F44 /* AviationMetarMenubarTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		FD64CD192DB186E400402F44 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FD64CD272DB186E500402F44 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FD64CD172DB186E400402F44 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FD64CD942DB18F0500402F44 /* MetarService.swift in Sources */,
+				FD64CD952DB18F0500402F44 /* ContentView.swift in Sources */,
+				FD64CD972DB18F0500402F44 /* AirportManagementView.swift in Sources */,
+				FD64CD982DB18F0500402F44 /* AirportManager.swift in Sources */,
+				FD64CD9A2DB18F0500402F44 /* main.swift in Sources */,
+				FD64CD9B2DB18F0500402F44 /* MenuBarController.swift in Sources */,
+				FD64CD9C2DB18F0500402F44 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FD64CD252DB186E500402F44 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FD64CD2B2DB186E500402F44 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FD64CD1A2DB186E400402F44 /* AviationMetarMenubar */;
+			targetProxy = FD64CD2A2DB186E500402F44 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		FD64CD3B2DB186E500402F44 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		FD64CD3C2DB186E500402F44 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		FD64CD3E2DB186E500402F44 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Aviation Metar Menubar";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.caledh.AviationMetarMenubar;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		FD64CD3F2DB186E500402F44 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Aviation Metar Menubar";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.caledh.AviationMetarMenubar;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		FD64CD412DB186E500402F44 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.caledh.AviationMetarMenubarTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AviationMetarMenubar.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AviationMetarMenubar";
+			};
+			name = Debug;
+		};
+		FD64CD422DB186E500402F44 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.caledh.AviationMetarMenubarTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AviationMetarMenubar.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AviationMetarMenubar";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FD64CD162DB186E400402F44 /* Build configuration list for PBXProject "AviationMetarMenubar" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FD64CD3B2DB186E500402F44 /* Debug */,
+				FD64CD3C2DB186E500402F44 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FD64CD3D2DB186E500402F44 /* Build configuration list for PBXNativeTarget "AviationMetarMenubar" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FD64CD3E2DB186E500402F44 /* Debug */,
+				FD64CD3F2DB186E500402F44 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FD64CD402DB186E500402F44 /* Build configuration list for PBXNativeTarget "AviationMetarMenubarTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FD64CD412DB186E500402F44 /* Debug */,
+				FD64CD422DB186E500402F44 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FD64CD132DB186E400402F44 /* Project object */;
+}
