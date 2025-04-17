@@ -1,7 +1,7 @@
 import Foundation
 import CoreLocation
 
-struct Airport: Identifiable, Codable, Equatable {
+struct Airport: Identifiable, Codable, Equatable, Hashable {
     var id: String { icaoId }
     let icaoId: String
     let name: String
@@ -33,6 +33,10 @@ struct Airport: Identifiable, Codable, Equatable {
     // Static methods
     static func == (lhs: Airport, rhs: Airport) -> Bool {
         return lhs.icaoId == rhs.icaoId
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(icaoId)
     }
 }
 
