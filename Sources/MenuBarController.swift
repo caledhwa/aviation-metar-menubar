@@ -415,8 +415,9 @@ class MenuBarController: NSObject {
         // Fix minimum size to ensure buttons remain visible
         window.minSize = NSSize(width: 700, height: 600)
         
-        // Make sure the window is key and front
+        // Make sure the window is key and front with strong activation
         window.makeKeyAndOrderFront(nil)
+        window.orderFrontRegardless()  // Force the window to front
         NSApp.activate(ignoringOtherApps: true)
         
         // Create a window controller to manage the window

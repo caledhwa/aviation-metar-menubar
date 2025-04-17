@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "type": "lldb",
+            "type": "swift",
             "request": "launch",
             "args": [],
             "cwd": "${workspaceFolder:AviationMetarMenubar}",
@@ -10,7 +10,7 @@
             "preLaunchTask": "swift: Build Debug AviationMetarMenubar"
         },
         {
-            "type": "lldb",
+            "type": "swift",
             "request": "launch",
             "args": [],
             "cwd": "${workspaceFolder:AviationMetarMenubar}",

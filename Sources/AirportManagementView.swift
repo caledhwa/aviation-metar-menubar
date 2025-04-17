@@ -1,6 +1,45 @@
 import SwiftUI
 import CoreLocation
 import UniformTypeIdentifiers
+import AppKit
+
+// NSViewRepresentable wrapper for NSSearchField
+struct MacSearchField: NSViewRepresentable {
+    @Binding var text: String
+    var placeholder: String
+    
+    func makeNSView(context: Context) -> NSSearchField {
+        let searchField = NSSearchField()
+        searchField.placeholderString = placeholder
+        searchField.delegate = context.coordinator
+        return searchField
+    }
+    
+    func updateNSView(_ nsView: NSSearchField, context: Context) {
+        // Only update if needed to prevent cursor jumping
+        if nsView.stringValue != text {
+            nsView.stringValue = text
+        }
+    }
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+    
+    class Coordinator: NSObject, NSSearchFieldDelegate {
+        var parent: MacSearchField
+        
+        init(_ parent: MacSearchField) {
+            self.parent = parent
+        }
+        
+        func controlTextDidChange(_ obj: Notification) {
+            if let searchField = obj.object as? NSSearchField {
+                parent.text = searchField.stringValue
+            }
+        }
+    }
+}
 
 struct AirportManagementView: View {
     @Environment(\.presentationMode) var presentationMode
@@ -10,6 +49,9 @@ struct AirportManagementView: View {
     @State private var selectedUserAirport: Airport?
     @State private var searchText: String = ""
     @State private var draggedAirport: Airport?
+    
+    // Add focus state for the search field
+    @FocusState private var searchFieldIsFocused: Bool
     
     // New sort state variables
     @State private var leftSortMode: SortMode = .nameAsc
@@ -143,8 +185,8 @@ struct AirportManagementView: View {
                     .padding(.horizontal)
                     
                     HStack {
-                        TextField("Search airports", text: $searchText)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                        MacSearchField(text: $searchText, placeholder: "Search airports")
+                            .focused($searchFieldIsFocused)
                         
                         if !searchText.isEmpty {
                             Button(action: {
@@ -344,6 +386,10 @@ struct AirportManagementView: View {
                minHeight: 500, idealHeight: 500, maxHeight: .infinity)
         .onAppear {
             airportManager.fetchAirports()
+            // Set focus to the search field when the view appears
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                searchFieldIsFocused = true
+            }
         }
     }
     
