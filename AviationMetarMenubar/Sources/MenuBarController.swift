@@ -6,6 +6,10 @@ class MenuBarController: NSObject {
     private var metarService: MetarService!
     private var airportManager: AirportManager!
     private var refreshTimer: Timer?
+    // Add a timer and index for rotating the menubar title
+    private var rotationTimer: Timer?
+    private var currentAirportIndex: Int = 0
+    private let rotationInterval: TimeInterval = 4.0 // seconds
 
     override init() {
         super.init()
@@ -27,6 +31,7 @@ class MenuBarController: NSObject {
         }
         
         startRefreshTimer()
+        startRotationTimer()
     }
 
     private func setupMenuBar() {
@@ -255,16 +260,19 @@ class MenuBarController: NSObject {
 
     private func updateMenu() {
         if let button = statusItem.button {
-            if let firstAirport = metarService.airports.first {
-                // Format the menu bar title with condensed information
-                let titleText = formatCondensedMenuTitle(airport: firstAirport)
-                
-                // Create an attributed string with the flight category color
+            // Use the rotating index instead of always the first airport
+            let airports = metarService.airports
+            if !airports.isEmpty {
+                // Ensure index is in bounds
+                if currentAirportIndex >= airports.count {
+                    currentAirportIndex = 0
+                }
+                let airport = airports[currentAirportIndex]
+                let titleText = formatCondensedMenuTitle(airport: airport)
                 let attributes: [NSAttributedString.Key: Any] = [
-                    .foregroundColor: firstAirport.categoryColor,
+                    .foregroundColor: airport.categoryColor,
                     .font: NSFont(name: "Frutiger Bold", size: 18) ?? NSFont.systemFont(ofSize: 18, weight: .bold)
                 ]
-                
                 let attributedTitle = NSAttributedString(string: titleText, attributes: attributes)
                 button.attributedTitle = attributedTitle
             } else if metarService.lastError != nil {
@@ -289,6 +297,21 @@ class MenuBarController: NSObject {
 
     private func startRefreshTimer() {
         refreshTimer = Timer.scheduledTimer(timeInterval: 600, target: self, selector: #selector(refreshData), userInfo: nil, repeats: true)
+    }
+
+    // Add a timer to rotate the menubar title
+    private func startRotationTimer() {
+        rotationTimer?.invalidate()
+        rotationTimer = Timer.scheduledTimer(withTimeInterval: rotationInterval, repeats: true) { [weak self] _ in
+            guard let self = self else { return }
+            let count = self.metarService.airports.count
+            if count > 0 {
+                self.currentAirportIndex = (self.currentAirportIndex + 1) % count
+                DispatchQueue.main.async {
+                    self.updateMenu()
+                }
+            }
+        }
     }
 
     private func formatCondensedMenuTitle(airport: Metar) -> String {
@@ -441,5 +464,10 @@ class MenuBarController: NSObject {
                 self?.statusItem.menu = nil
                 self?.showMenu()
             }
+    }
+
+    // Invalidate rotation timer on deinit
+    deinit {
+        rotationTimer?.invalidate()
     }
 }
