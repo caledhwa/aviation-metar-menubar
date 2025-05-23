@@ -2,6 +2,10 @@
 
 Aviation Metar Menubar is a macOS application that provides real-time aviation weather information (METARs) for various airports. The application runs in the macOS menubar and updates every 10 minutes to display the latest weather conditions.
 
+![alt text](s1.png) 
+![alt text](s2.png) 
+![alt text](s3.png)
+
 ## Features
 
 - Displays METAR information for multiple airports.
